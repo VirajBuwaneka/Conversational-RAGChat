@@ -1,3 +1,7 @@
+
+import os
+os.environ["STREAMLIT_SERVER_HEADLESS"] = "true"
+
 # app.py
 import streamlit as st
 import os
