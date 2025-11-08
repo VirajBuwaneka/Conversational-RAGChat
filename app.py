@@ -1,4 +1,3 @@
-# app.py
 import streamlit as st
 import os
 from datetime import datetime
@@ -16,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for better styling
+
 st.markdown("""
 <style>
     .main-header {
@@ -601,7 +600,7 @@ def main():
     
     # Display token counter in bottom right corner
     chatbot.display_token_counter()
-# ✅ Signature Text Added (no code removed)
+
 st.markdown("""
 <div class="designed-by-text">
  Designed by <span style='color:#1f77b4;'>Viraj Buwaneka</span> 
