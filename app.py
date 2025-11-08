@@ -10,7 +10,7 @@ load_dotenv()
 
 # Page configuration
 st.set_page_config(
-    page_title="RAG Chatbot",
+    page_title="Chatbot",
     page_icon="🤖",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -420,7 +420,7 @@ def main():
     api_key = os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY")
     
     # Header
-    st.markdown('<h1 class="main-header">🤖 Multi-Session RAG Chatbot</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">🤖 Multi-Session Chatbot</h1>', unsafe_allow_html=True)
     
     # Sidebar
     with st.sidebar:
