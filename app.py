@@ -1,7 +1,3 @@
-
-import os
-os.environ["STREAMLIT_SERVER_HEADLESS"] = "true"
-
 # app.py
 import streamlit as st
 import os
@@ -595,9 +591,16 @@ def main():
                 "timestamp": timestamp
             }
             current_data["messages"].append(assistant_message)
+            
     
     # Display token counter in bottom right corner
     chatbot.display_token_counter()
+# ✅ Signature Text Added (no code removed)
+st.markdown("""
+<div class="designed-by-text">
+ Designed by <span style='color:#1f77b4;'>Viraj Buwaneka</span> 
+</div>
+""", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
