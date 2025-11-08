@@ -169,17 +169,29 @@ class SimpleSessionRAGChatbot:
             st.error(f"❌ Missing import: {e}")
             return False
     
+    def get_api_key(self):
+        """Get API key from environment variables or Streamlit secrets"""
+        return os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY")
+    
     def initialize_llm(self):
         """Initialize LLM and embedding model"""
         try:
-            if not os.getenv("OPENAI_API_KEY"):
+            api_key = self.get_api_key()
+            if not api_key:
                 st.error("❌ OPENAI_API_KEY not found")
                 return False, None, None
             
             from langchain_openai import ChatOpenAI, OpenAIEmbeddings
             
-            llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.0)
-            embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
+            llm = ChatOpenAI(
+                model="gpt-3.5-turbo", 
+                temperature=0.0,
+                openai_api_key=api_key
+            )
+            embedding_model = OpenAIEmbeddings(
+                model="text-embedding-3-small",
+                openai_api_key=api_key
+            )
             
             return True, llm, embedding_model
         except Exception as e:
@@ -405,6 +417,9 @@ def main():
     # Initialize chatbot
     chatbot = SimpleSessionRAGChatbot()
     
+    # Check for API key in both environment variables AND Streamlit secrets
+    api_key = os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY")
+    
     # Header
     st.markdown('<h1 class="main-header">🤖 Multi-Session RAG Chatbot</h1>', unsafe_allow_html=True)
     
@@ -412,11 +427,19 @@ def main():
     with st.sidebar:
         st.header("Configuration")
         
-        # API Key check
-        if not os.getenv("OPENAI_API_KEY"):
+        # API Key check - UPDATED to check both sources
+        if not api_key:
             st.error("🔑 OPENAI_API_KEY not found")
-            st.info("Add your OpenAI API key to a .env file:")
-            st.code("OPENAI_API_KEY=your-api-key-here")
+            st.info("Add your OpenAI API key to Streamlit Secrets:")
+            st.code("""
+# In Streamlit Cloud Secrets:
+OPENAI_API_KEY = "your-actual-api-key-here"
+
+# Or in local .env file:
+OPENAI_API_KEY=your-api-key-here
+""")
+        else:
+            st.success("🔑 OPENAI_API_KEY found")
         
         # Check imports
         st.subheader("System Check")
@@ -524,16 +547,27 @@ def main():
                 else:
                     st.info(f"📄 {uploaded_file.name} already uploaded")
         
-        # Status
+        # Status - UPDATED to check both sources
         st.subheader("📊 Status")
-        st.write(f"🔑 API Key: {'✅ Found' if os.getenv('OPENAI_API_KEY') else '❌ Missing'}")
+        st.write(f"🔑 API Key: {'✅ Found' if api_key else '❌ Missing'}")
         st.write(f"📚 Documents: {len(current_data['documents'])}")
         st.write(f"💬 Messages: {len(current_data['messages'])}")
         st.write(f"🔢 Total Tokens: {current_data.get('total_tokens', 0):,}")
 
-    # Main chat area
-    if not os.getenv("OPENAI_API_KEY"):
-        st.error("## 🔑 OpenAI API Key Required\n\nPlease add OPENAI_API_KEY to your .env file")
+    # Main chat area - UPDATED to check both sources
+    if not api_key:
+        st.error("## 🔑 OpenAI API Key Required")
+        st.info("""
+Please add your OpenAI API key:
+
+**For Streamlit Cloud:**
+1. Go to app settings (⚙️ icon)
+2. Click 'Secrets' tab
+3. Add: `OPENAI_API_KEY = "your-actual-key-here"`
+
+**For Local Development:**
+Add to your .env file: `OPENAI_API_KEY=your-api-key-here`
+""")
         return
     
     current_data = chatbot.get_current_session_data()
