@@ -2,7 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
-name: Build and deploy Python app to Azure Web App - RagApplication
+name: Build and deploy Python app to Azure Web App - RAGApplication
 
 on:
   push:
@@ -63,15 +63,14 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_2CCED18AD436475E89B360845BB39DE5 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A8E2A6CA6537423FAC2D3059021D91A4 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A73DA71FBAF345FBA4AFAAF811E14042 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_F4BE7A06D6D9434D8BE9057D4B028A08 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_88F72AA00E9B44048F0BD4C72CFBC180 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_D4B4640493BF4070986A916E6FE1B7B6 }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'RagApplication'
+          app-name: 'RAGApplication'
           slot-name: 'Production'
-
           
