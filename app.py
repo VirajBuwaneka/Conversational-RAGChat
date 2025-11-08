@@ -166,7 +166,6 @@ class SimpleSessionRAGChatbot:
             from langchain_community.vectorstores import Chroma
             return True
         except ImportError as e:
-            st.error(f"❌ Missing import: {e}")
             return False
     
     def get_api_key(self):
@@ -178,7 +177,6 @@ class SimpleSessionRAGChatbot:
         try:
             api_key = self.get_api_key()
             if not api_key:
-                st.error("❌ OPENAI_API_KEY not found")
                 return False, None, None
             
             from langchain_openai import ChatOpenAI, OpenAIEmbeddings
@@ -195,7 +193,6 @@ class SimpleSessionRAGChatbot:
             
             return True, llm, embedding_model
         except Exception as e:
-            st.error(f"❌ Error initializing LLM: {str(e)}")
             return False, None, None
     
     def estimate_tokens(self, text):
@@ -210,11 +207,13 @@ class SimpleSessionRAGChatbot:
         try:
             # Check imports
             if not self.check_imports():
+                st.error("❌ System configuration error")
                 return False
             
             # Initialize LLM
             success, llm, embedding_model = self.initialize_llm()
             if not success:
+                st.error("❌ Unable to initialize AI models")
                 return False
             
             # Save uploaded file temporarily
@@ -289,7 +288,7 @@ class SimpleSessionRAGChatbot:
             return True
             
         except Exception as e:
-            st.error(f"❌ Error processing file: {str(e)}")
+            st.error(f"❌ Error processing file")
             return False
     
     def remove_document(self, doc_index):
@@ -379,7 +378,7 @@ class SimpleSessionRAGChatbot:
             return response.content, total_tokens
             
         except Exception as e:
-            error_msg = f"Sorry, I encountered an error: {str(e)}"
+            error_msg = f"Sorry, I encountered an error"
             return error_msg, 0
     
     def display_chat_messages(self):
@@ -427,26 +426,10 @@ def main():
     with st.sidebar:
         st.header("Configuration")
         
-        # API Key check - UPDATED to check both sources
+        # Only show configuration error if API key is missing
         if not api_key:
-            st.error("🔑 OPENAI_API_KEY not found")
-            st.info("Add your OpenAI API key to Streamlit Secrets:")
-            st.code("""
-# In Streamlit Cloud Secrets:
-OPENAI_API_KEY = "your-actual-api-key-here"
-
-# Or in local .env file:
-OPENAI_API_KEY=your-api-key-here
-""")
-        else:
-            st.success("🔑 OPENAI_API_KEY found")
-        
-        # Check imports
-        st.subheader("System Check")
-        if chatbot.check_imports():
-            st.success("✅ All imports working")
-        else:
-            st.error("❌ Some imports missing")
+            st.error("🔑 Configuration Required")
+            st.info("Please configure the application to continue.")
         
         # Session Management
         st.subheader("📂 Session Management")
@@ -547,27 +530,16 @@ OPENAI_API_KEY=your-api-key-here
                 else:
                     st.info(f"📄 {uploaded_file.name} already uploaded")
         
-        # Status - UPDATED to check both sources
+        # Status - Only show session information
         st.subheader("📊 Status")
-        st.write(f"🔑 API Key: {'✅ Found' if api_key else '❌ Missing'}")
         st.write(f"📚 Documents: {len(current_data['documents'])}")
         st.write(f"💬 Messages: {len(current_data['messages'])}")
         st.write(f"🔢 Total Tokens: {current_data.get('total_tokens', 0):,}")
 
-    # Main chat area - UPDATED to check both sources
+    # Main chat area - Only show error if API key is missing
     if not api_key:
-        st.error("## 🔑 OpenAI API Key Required")
-        st.info("""
-Please add your OpenAI API key:
-
-**For Streamlit Cloud:**
-1. Go to app settings (⚙️ icon)
-2. Click 'Secrets' tab
-3. Add: `OPENAI_API_KEY = "your-actual-key-here"`
-
-**For Local Development:**
-Add to your .env file: `OPENAI_API_KEY=your-api-key-here`
-""")
+        st.error("## 🔑 Configuration Required")
+        st.info("Please configure the application settings to continue.")
         return
     
     current_data = chatbot.get_current_session_data()
