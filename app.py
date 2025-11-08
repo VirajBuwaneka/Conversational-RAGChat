@@ -84,6 +84,15 @@ st.markdown("""
         border: 1px solid #e9ecef;
         z-index: 999;
     }
+    .designed-by {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        font-size: 0.7rem;
+        color: #666;
+        opacity: 0.8;
+        z-index: 1000;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -600,12 +609,13 @@ def main():
     
     # Display token counter in bottom right corner
     chatbot.display_token_counter()
-
-st.markdown("""
-<div class="designed-by-text">
- Designed by <span style='color:#1f77b4;'>Viraj Buwaneka</span> 
-</div>
-""", unsafe_allow_html=True)
+    
+    # Display "designed by" text in bottom LEFT corner
+    st.markdown("""
+    <div class="designed-by">
+        designed by viraj buwaneka
+    </div>
+    """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
