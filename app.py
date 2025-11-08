@@ -613,7 +613,7 @@ def main():
     # Display "designed by" text in bottom LEFT corner
     st.markdown("""
     <div class="designed-by">
-        designed by viraj buwaneka
+        by virajX 
     </div>
     """, unsafe_allow_html=True)
 
